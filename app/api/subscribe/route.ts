@@ -7,6 +7,10 @@ function isEmailValid(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function isMailchimpBypassEnabled(): boolean {
+  return process.env.MAILCHIMP_BYPASS === "true" && process.env.NODE_ENV !== "production";
+}
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as {
@@ -31,7 +35,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Subscription consent is required to continue." }, { status: 400 });
     }
 
-    await subscribeToMailchimp({ email, firstName, consent });
+    const bypassed = isMailchimpBypassEnabled();
+    if (!bypassed) {
+      await subscribeToMailchimp({ email, firstName, consent });
+    }
 
     const token = createSessionToken({
       email,
@@ -39,7 +46,7 @@ export async function POST(request: Request) {
       subscribedAt: new Date().toISOString()
     });
 
-    const response = NextResponse.json({ ok: true });
+    const response = NextResponse.json({ ok: true, bypassed });
     response.cookies.set({
       name: SESSION_COOKIE,
       value: token,

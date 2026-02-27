@@ -22,13 +22,14 @@ Then open [http://localhost:3000](http://localhost:3000).
 
 - `SESSION_SECRET`
 - `DRAW_SECRET`
-- `MAILCHIMP_API_KEY`
-- `MAILCHIMP_AUDIENCE_ID`
+- `MAILCHIMP_API_KEY` (required unless `MAILCHIMP_BYPASS=true` in local non-production testing)
+- `MAILCHIMP_AUDIENCE_ID` (required unless `MAILCHIMP_BYPASS=true` in local non-production testing)
 - `OPENAI_API_KEY` (optional; fallback reading used if omitted)
 
 Optional:
 
 - `MAILCHIMP_TAG` (default `oracle_daily`)
+- `MAILCHIMP_BYPASS` (set `true` only for local testing; ignored in production)
 - `OPENAI_MODEL` (default `gpt-4.1-mini`)
 - `NEXT_PUBLIC_SERVICES_URL`
 

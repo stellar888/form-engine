@@ -44,6 +44,8 @@ function imageSrc(cardImage: string): string {
   return `/api/image/${normalized}`;
 }
 
+const CARD_BACK_IMAGE = "images/oracle/back-00.jpg";
+
 export default function HomePage() {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
@@ -203,13 +205,14 @@ export default function HomePage() {
           </form>
         ) : (
           <>
-            <div className="card-stage">
+            <div className={`card-stage ${readingLoading ? "card-stage-loading" : ""}`}>
               {!revealed ? (
                 <button className="card-back" onClick={handleReveal}>
-                  <p>Tap To Reveal</p>
+                  <img className="card-back-image" src={imageSrc(CARD_BACK_IMAGE)} alt="Card back" />
+                  <span className="card-back-label">Tap To Reveal</span>
                 </button>
               ) : (
-                <div className="card-front">
+                <div className={`card-front ${readingLoading ? "card-front-loading" : ""}`}>
                   <img src={imageSrc(draw.card.image)} alt={draw.card.title} />
                 </div>
               )}
@@ -217,7 +220,17 @@ export default function HomePage() {
 
             {revealed ? <h2>{draw.card.title}</h2> : null}
 
-            {readingLoading ? <p className="hero-copy">Receiving your message...</p> : null}
+            {readingLoading ? (
+              <div className="loading-box" role="status" aria-live="polite">
+                <div className="loading-orb" />
+                <p className="hero-copy">Interpreting your card with current Sun and Moon energy...</p>
+                <div className="loading-dots" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              </div>
+            ) : null}
 
             {reading ? (
               <>
